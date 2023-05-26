@@ -4,7 +4,7 @@ from snowflake.connector.pandas_tools import write_pandas
 import pandas as pd
 
 # Fetch data from Stack Exchange API
-def fetch_data_from_stack_overflow(api_key, query_params):
+def fetch_data_from_stack_overflow(api_key):
     base_url = "https://api.stackexchange.com/2.3/"
     endpoint = "questions"  
     
@@ -15,10 +15,9 @@ def fetch_data_from_stack_overflow(api_key, query_params):
     }
     
   
-    query_params.update(common_params)
     
     try:
-        response = requests.get(base_url + endpoint, params=query_params)
+        response = requests.get(base_url + endpoint, params=common_params)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
@@ -64,14 +63,10 @@ def store_data_in_snowflake(data, snowflake_config):
     print("Data stored in Snowflake table successfully.")
 
 
-api_key = "your api key"
-query_params = {
-    "tagged": "python",
-    "order": "desc",
-    "sort": "creation"
-}
+api_key = "api key"
 
-response_data = fetch_data_from_stack_overflow(api_key, query_params)
+
+response_data = fetch_data_from_stack_overflow(api_key)
 if response_data:
     snowflake_config = {
         'user': 'username',
